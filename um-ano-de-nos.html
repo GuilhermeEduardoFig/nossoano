@@ -145,7 +145,8 @@
   .quadro.ativo{opacity:1;z-index:1}
   .quadro img{
     width:100%;height:100%;
-    object-fit:cover;
+    object-fit:contain;
+    object-position:center;
     display:block;
     -webkit-user-select:none;user-select:none;
     -webkit-user-drag:none;
@@ -284,6 +285,20 @@
     margin-top:.4rem;
   }
 
+  /* ---------- player do spotify ---------- */
+  .spotify-caixa{
+    max-width:38rem;
+    padding:.6rem;
+    border:1px solid var(--borda);
+    border-radius:4px;
+    background:var(--noite-alta);
+  }
+  .spotify-caixa iframe{
+    display:block;
+    width:100%;
+    border:0;
+  }
+
   /* ---------- céu de bilhetes ---------- */
   .ceu{
     position:relative;
@@ -406,12 +421,24 @@
     <div class="pontos" id="pontos"></div>
   </section>
 
+  <section class="parte" aria-label="nossa trilha sonora">
+    <h2>Nossa trilha</h2>
+    <p class="legenda">A música (ou playlist) que é a nossa. Aperte play.</p>
+    <div class="spotify-caixa">
+      <!-- TROQUE A URL DO src ABAIXO: no Spotify, toque em Compartilhar > Incorporar
+           faixa/playlist/álbum, copie o endereço que vem depois de src=" e cole aqui -->
+<iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/3kXeTpPtHJl6fDqtHUbrN6?utm_source=generator&si=c395f8b9e4484834" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
+  </section>
+
   <section class="parte" aria-label="uma carta para você">
     <h2>Uma carta pra você</h2>
     <!-- EDITE O TEXTO DA CARTA AQUI EMBAIXO. Cada <p> é um parágrafo. -->
     <div class="carta">
-      <p>Faz um ano que eu te levei pra uma pracinha com uma rosa e  sonho, um sonho de me casar algum dia com você, e nesse exato momento eu vejo que esse sonho se aproxima cada vez mais, eu nunca vou me arrepender de ter feito tudo ser tão rápido, mas pra falar verdade gostaria de ter pedido sua mão no primeiro dia mas da forma que aconteceu e vem acontecendo me deixa feliz todos os dias, sério meu amor você não tem noção do quanto vc continua mudando minha vida todos os dias, vc me transformou de uma forma que nunca imaginei, vc conseguiu me deixar na minha melhor versão, e pra mim vai ser o maior prazer ser essa versão ao seu lado, pra que possamos compartilhar momentos e muitas risadas como temos feito até hoje. Escrevo isso de todo meu coração, pode ter muitos erros ortográficos, mas se tem uma coisa que eu sei que nunca vai ser um erro é a escolha de estar sempre ao seu lado, eu acho que se eu começasse a escrever esse texto no começo de tudo eu iria está só no começo pq nossa história é longa e corre pro infinito e não pode ser descrita por um simples textinho, e por fim fica todas minhas gratidões por ter uma mulher incrível dessa ao meu lado, uma mulher que escolhe todos os dias me tratar da melhor forma possível e fazer todos os meus dias alegres e é essa a mulher com a qual vou me casar. Eu Te Amo Minha Princesa ❤️❤️❤️❤️</p>
-      <p class="assinatura">— com amor, seu Gui</p>
+      <p>Faz um ano que a gente decidiu topar isso juntos — e sinceramente, foi o melhor "sim" que eu já dei na vida.</p>
+      <p>Tem uma foto pra cada risada boba, cada viagem, cada tarde sem plano nenhum que virou a melhor lembrança. E o contador aí em cima não para: continua passando, do jeito que a gente também não parou.</p>
+      <p>Obrigado por um ano inteiro do seu jeito de ser. Que vire muitos mais.</p>
+      <p class="assinatura">— com amor, [seu nome]</p>
     </div>
     <!-- FIM DO TEXTO DA CARTA -->
   </section>
@@ -477,6 +504,12 @@
   var ANGULO_DOURADO = 2.399963229728653; // radiano, ~137.508°
 
   var fotos = FOTOS_PADRAO.slice();
+  // largura e altura reais de cada foto, na mesma ordem do array acima —
+  // usadas para a caixa do carrossel assumir a proporção exata da foto atual
+  var FOTOS_DIMENSOES = [
+    [1280, 960], [720, 1280], [959, 1280], [1280, 959],
+    [959, 1280], [959, 1280], [1200, 1600], [900, 1600], [1280, 960]
+  ];
   var indice = 0;
   var inicio = new Date(PADRAO_INICIO);
   var auto = null;
@@ -606,6 +639,15 @@
 
   /* ================= carrossel (galeria fixa) ================= */
 
+  // ajusta a caixa do carrossel para a proporção exata da foto atual:
+  // assim ela ocupa a caixa inteira, centralizada, sem cortar e sem borda
+  function atualizarProporcao(){
+    var dim = FOTOS_DIMENSOES[indice];
+    if(dim && dim[0] > 0 && dim[1] > 0){
+      palco.style.aspectRatio = dim[0] + " / " + dim[1];
+    }
+  }
+
   function desenharGaleria(){
     var antigos = palco.querySelectorAll(".quadro");
     for(var i = antigos.length - 1; i >= 0; i--){ antigos[i].parentNode.removeChild(antigos[i]); }
@@ -623,6 +665,7 @@
     }
     if(indice >= fotos.length){ indice = fotos.length - 1; }
     if(indice < 0){ indice = 0; }
+    atualizarProporcao();
 
     fotos.forEach(function(src, i){
       var q = document.createElement("div");
@@ -654,6 +697,7 @@
   function irPara(i){
     if(!fotos.length) return;
     indice = ((i % fotos.length) + fotos.length) % fotos.length;
+    atualizarProporcao();
     var quadros = palco.querySelectorAll(".quadro");
     for(var k = 0; k < quadros.length; k++){
       quadros[k].className = k === indice ? "quadro ativo" : "quadro";
