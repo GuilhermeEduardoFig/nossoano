@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Um ano de nós</title>
+<meta name="description" content="O tempo que a gente tem, contado em anos, meses, dias e segundos.">
+<meta name="theme-color" content="#15101F">
+<meta property="og:title" content="Um ano de nós">
+<meta property="og:description" content="O tempo que a gente tem, contado em anos, meses, dias e segundos.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,700&family=Karla:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --noite:#15101F;
+    --noite-alta:#241A33;
+    --tinta:#F5E6D8;
+    --tinta-baixa:#A493B8;
+    --ambar:#F2A65A;
+    --rosa:#D0708A;
+    --borda:rgba(245,230,216,.14);
+    --serifa:"Fraunces", Georgia, "Times New Roman", serif;
+    --sans:"Karla", "Helvetica Neue", Arial, sans-serif;
+    color-scheme: dark;
+  }
+  :root:not([data-theme="light"]){ color-scheme: dark; }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ color-scheme: dark; } }
+  :root[data-theme="dark"]{ color-scheme: dark; }
+
+  /* precisa vir depois das classes com display, senão o atributo hidden é ignorado */
+  [hidden]{ display:none !important; }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;overflow-x:hidden}
+  body{
+    background-color:var(--noite);
+    background-image:
+      radial-gradient(120% 80% at 50% -10%, rgba(242,166,90,.20), transparent 60%),
+      radial-gradient(90% 70% at 85% 110%, rgba(208,112,138,.18), transparent 60%);
+    background-attachment:fixed;
+    color:var(--tinta);
+    font-family:var(--sans);
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  .folha{
+    max-width:60rem;
+    margin:0 auto;
+    padding:clamp(2.5rem,8vw,6rem) clamp(1.25rem,5vw,3rem) 5rem;
+  }
+
+  /* ---------- abertura ---------- */
+  h1{
+    font-family:var(--serifa);
+    font-weight:300;
+    font-optical-sizing:auto;
+    font-size:clamp(2.6rem,9vw,5.2rem);
+    line-height:.95;
+    letter-spacing:-.02em;
+    margin:0 0 .6rem;
+  }
+  .desde{
+    color:var(--tinta-baixa);
+    font-size:.95rem;
+    margin:0 0 clamp(2rem,6vw,3.25rem);
+  }
+  .desde button{
+    background:none;border:0;padding:0;
+    color:var(--tinta-baixa);
+    font:inherit;
+    text-decoration:underline;
+    text-underline-offset:3px;
+    text-decoration-color:var(--borda);
+    cursor:pointer;
+  }
+  .desde button:hover{color:var(--tinta);text-decoration-color:var(--ambar)}
+
+  /* ---------- contador ---------- */
+  .contador{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:baseline;
+    gap:clamp(.4rem,2vw,.9rem) clamp(.6rem,2.2vw,1.25rem);
+    font-family:var(--serifa);
+    font-optical-sizing:auto;
+    margin:0 0 1.5rem;
+  }
+  .medida{display:flex;align-items:baseline;gap:.3em}
+  .numero{
+    font-size:clamp(2.5rem,10vw,5.6rem);
+    font-weight:500;
+    line-height:1;
+    letter-spacing:-.03em;
+    font-variant-numeric:tabular-nums;
+  }
+  .medida:nth-child(1) .numero{color:var(--ambar)}
+  .medida:nth-child(2) .numero{color:var(--tinta)}
+  .medida:nth-child(3) .numero,
+  .medida:nth-child(4) .numero,
+  .medida:nth-child(5) .numero{color:var(--tinta);opacity:.86}
+  .medida:nth-child(6) .numero{
+    color:var(--rosa);
+    font-size:clamp(1.7rem,6.5vw,3.4rem);
+  }
+  .unidade{
+    font-family:var(--sans);
+    font-size:clamp(.75rem,2.2vw,.95rem);
+    font-weight:500;
+    color:var(--tinta-baixa);
+  }
+  .marco{
+    font-size:1rem;
+    color:var(--tinta-baixa);
+    border-left:2px solid var(--ambar);
+    padding-left:.85rem;
+    margin:0 0 clamp(3rem,9vw,5rem);
+    min-height:1.6em;
+  }
+  .marco b{color:var(--tinta);font-weight:600}
+
+  /* ---------- carrossel ---------- */
+  .galeria{position:relative}
+  .palco{
+    position:relative;
+    width:100%;
+    aspect-ratio:4/5;
+    max-height:78vh;
+    border-radius:2px;
+    overflow:hidden;
+    background:var(--noite-alta);
+    border:1px solid var(--borda);
+    touch-action:pan-y;
+  }
+  @media (min-width:720px){ .palco{aspect-ratio:3/2} }
+  .quadro{
+    position:absolute;inset:0;
+    opacity:0;
+    z-index:0;
+    transition:opacity .7s ease;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .quadro.ativo{opacity:1;z-index:1}
+  .quadro img{
+    width:100%;height:100%;
+    object-fit:cover;
+    display:block;
+    -webkit-user-select:none;user-select:none;
+    -webkit-user-drag:none;
+  }
+  @media (prefers-reduced-motion:reduce){ .quadro{transition:none} }
+
+  .vazio{
+    position:absolute;inset:0;
+    z-index:2;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    gap:1rem;text-align:center;
+    padding:2rem;
+    color:var(--tinta-baixa);
+  }
+  .vazio p{margin:0;max-width:24rem}
+
+  .setas{
+    position:absolute;inset:0;
+    z-index:3;
+    display:flex;justify-content:space-between;align-items:center;
+    pointer-events:none;
+  }
+  .seta{
+    pointer-events:auto;
+    width:3rem;height:3rem;
+    min-width:3rem;
+    margin:0 .5rem;
+    border-radius:50%;
+    border:1px solid var(--borda);
+    background:rgba(21,16,31,.55);
+    -webkit-backdrop-filter:blur(6px);
+    backdrop-filter:blur(6px);
+    color:var(--tinta);
+    font-size:1.25rem;line-height:1;
+    cursor:pointer;
+    display:grid;place-items:center;
+    transition:background .2s ease,border-color .2s ease;
+  }
+  .seta:hover{background:rgba(21,16,31,.85);border-color:var(--ambar)}
+
+  .pontos{
+    display:flex;gap:.5rem;justify-content:center;
+    margin:1.1rem 0 0;
+    flex-wrap:wrap;
+    min-height:.55rem;
+  }
+  .ponto{
+    width:.55rem;height:.55rem;border-radius:50%;
+    border:1px solid var(--tinta-baixa);
+    background:none;padding:0;cursor:pointer;
+    transition:background .2s ease,transform .2s ease;
+  }
+  .ponto[aria-current="true"]{background:var(--ambar);border-color:var(--ambar);transform:scale(1.25)}
+
+  /* ---------- controles ---------- */
+  .acoes{
+    display:flex;flex-wrap:wrap;gap:.6rem;
+    margin-top:1.5rem;
+    align-items:center;
+  }
+  .botao{
+    font:500 .92rem/1 var(--sans);
+    color:var(--tinta);
+    background:rgba(245,230,216,.06);
+    border:1px solid var(--borda);
+    border-radius:999px;
+    padding:.7rem 1.15rem;
+    cursor:pointer;
+    transition:background .2s ease,border-color .2s ease;
+  }
+  .botao:hover{background:rgba(245,230,216,.12);border-color:var(--ambar)}
+  .botao.discreto{background:none;color:var(--tinta-baixa)}
+  .botao.discreto:hover{color:var(--tinta)}
+  .aviso{
+    font-size:.85rem;color:var(--tinta-baixa);
+    margin:.9rem 0 0;max-width:34rem;
+  }
+  .aviso.erro{color:var(--rosa)}
+  :focus-visible{outline:2px solid var(--ambar);outline-offset:3px;border-radius:2px}
+
+  .oculto-visualmente{
+    position:absolute;width:1px;height:1px;
+    margin:-1px;padding:0;border:0;
+    clip-path:inset(50%);overflow:hidden;white-space:nowrap;
+  }
+
+  dialog{
+    border:1px solid var(--borda);
+    border-radius:4px;
+    background:var(--noite-alta);
+    color:var(--tinta);
+    padding:1.75rem;
+    max-width:24rem;width:calc(100% - 2rem);
+    font-family:var(--sans);
+  }
+  dialog::backdrop{background:rgba(10,7,16,.7)}
+  dialog h2{font-family:var(--serifa);font-weight:500;font-size:1.4rem;margin:0 0 1rem}
+  dialog label{display:block;font-size:.85rem;color:var(--tinta-baixa);margin-bottom:.35rem}
+  dialog input[type=datetime-local]{
+    width:100%;padding:.6rem .7rem;font:inherit;
+    background:var(--noite);color:var(--tinta);
+    border:1px solid var(--borda);border-radius:3px;
+    margin-bottom:1.25rem;
+  }
+  dialog .acoes{margin-top:0}
+
+  /* ---------- céu de bilhetes ---------- */
+  .parte{margin-top:clamp(3.5rem,10vw,6rem)}
+  .parte > h2{
+    font-family:var(--serifa);
+    font-optical-sizing:auto;
+    font-weight:500;
+    font-size:clamp(1.6rem,5vw,2.2rem);
+    letter-spacing:-.01em;
+    margin:0 0 .55rem;
+  }
+  .legenda{color:var(--tinta-baixa);font-size:.95rem;margin:0 0 1.5rem;max-width:36rem}
+
+  .ceu{
+    position:relative;
+    min-height:clamp(220px,32vw,300px);
+    border:1px solid var(--borda);
+    border-radius:2px;
+    overflow:hidden;
+    background:
+      radial-gradient(110% 90% at 25% 15%, rgba(242,166,90,.10), transparent 55%),
+      radial-gradient(100% 90% at 80% 85%, rgba(208,112,138,.10), transparent 55%),
+      var(--noite-alta);
+  }
+  .ceuVazio{
+    position:absolute;inset:0;z-index:1;
+    display:flex;align-items:center;justify-content:center;
+    text-align:center;padding:2rem;margin:0;
+    color:var(--tinta-baixa);
+  }
+  .estrela{
+    position:absolute;
+    width:2.4rem;height:2.4rem;
+    border:0;padding:0;background:none;
+    cursor:pointer;
+    transform:translate(-50%,-50%);
+    transition:transform .2s ease;
+  }
+  .estrela::before{
+    content:"";
+    position:absolute;top:50%;left:50%;
+    width:.7rem;height:.7rem;
+    border-radius:50%;
+    background:var(--ambar);
+    filter:drop-shadow(0 0 7px rgba(242,166,90,.7));
+    transform:translate(-50%,-50%);
+    transition:filter .2s ease,width .2s ease,height .2s ease;
+  }
+  .estrela.rosada::before{
+    background:var(--rosa);
+    filter:drop-shadow(0 0 7px rgba(208,112,138,.7));
+  }
+  .estrela:hover{transform:translate(-50%,-50%) scale(1.15)}
+  .estrela[aria-pressed="true"]{transform:translate(-50%,-50%) scale(1.35)}
+  .estrela[aria-pressed="true"]::before{width:.85rem;height:.85rem}
+
+  .notaAberta{
+    margin-top:1.1rem;
+    padding:1.25rem 1.4rem;
+    border:1px solid var(--borda);
+    border-left:2px solid var(--rosa);
+    border-radius:2px;
+    background:rgba(245,230,216,.04);
+  }
+  .notaTexto{
+    font-family:var(--serifa);
+    font-optical-sizing:auto;
+    font-weight:400;
+    font-size:1.15rem;
+    line-height:1.55;
+    margin:0 0 .85rem;
+    white-space:pre-wrap;
+    overflow-wrap:break-word;
+  }
+  .notaMeta{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:1rem;flex-wrap:wrap;
+  }
+  .notaMeta span{font-size:.82rem;color:var(--tinta-baixa)}
+
+  textarea#textoBilhete{
+    display:block;width:100%;min-height:6rem;resize:vertical;
+    margin-top:1.1rem;
+    padding:.85rem 1rem;
+    font:inherit;font-family:var(--sans);font-size:.98rem;
+    background:rgba(245,230,216,.05);color:var(--tinta);
+    border:1px solid var(--borda);border-radius:3px;
+  }
+  textarea#textoBilhete::placeholder{color:var(--tinta-baixa)}
+  .restante{font-size:.82rem;color:var(--tinta-baixa)}
+
+  .rodape{
+    margin-top:clamp(3.5rem,10vw,6rem);
+    padding-top:1.5rem;
+    border-top:1px solid var(--borda);
+    font-family:var(--serifa);
+    font-optical-sizing:auto;
+    font-weight:300;
+    font-size:1.15rem;
+    color:var(--tinta-baixa);
+  }
+</style>
+</head>
+<body>
+<main class="folha">
+
+  <h1>Um ano de nós</h1>
+  <p class="desde">
+    contando desde <span id="rotuloInicio">7 de outubro de 2025</span> ·
+    <button id="abrirData" type="button">ajustar data</button>
+  </p>
+
+  <section class="contador" id="contador" aria-label="tempo juntos">
+    <span class="medida"><span class="numero" id="anos">0</span><span class="unidade" id="uAnos">anos</span></span>
+    <span class="medida"><span class="numero" id="meses">0</span><span class="unidade" id="uMeses">meses</span></span>
+    <span class="medida"><span class="numero" id="dias">0</span><span class="unidade" id="uDias">dias</span></span>
+    <span class="medida"><span class="numero" id="horas">0</span><span class="unidade" id="uHoras">horas</span></span>
+    <span class="medida"><span class="numero" id="minutos">0</span><span class="unidade" id="uMinutos">minutos</span></span>
+    <span class="medida"><span class="numero" id="segundos">00</span><span class="unidade" id="uSegundos">segundos</span></span>
+  </section>
+
+  <p class="marco" id="marco"></p>
+
+  <section class="galeria">
+    <div class="palco" id="palco">
+      <div class="vazio" id="vazio">
+        <p>Ainda não tem nenhuma foto aqui. Adicione as nossas e elas ficam guardadas neste navegador.</p>
+        <button class="botao" type="button" data-adicionar>Adicionar fotos</button>
+      </div>
+      <div class="setas" id="setas" hidden>
+        <button class="seta" type="button" id="anterior" aria-label="Foto anterior">&lsaquo;</button>
+        <button class="seta" type="button" id="proxima" aria-label="Próxima foto">&rsaquo;</button>
+      </div>
+    </div>
+    <div class="pontos" id="pontos"></div>
+
+    <div class="acoes">
+      <button class="botao" type="button" data-adicionar>Adicionar fotos</button>
+      <button class="botao discreto" type="button" id="removerAtual" hidden>Remover esta foto</button>
+      <button class="botao discreto" type="button" id="alternarAuto" hidden>Pausar passagem</button>
+    </div>
+    <input class="oculto-visualmente" type="file" id="arquivo" accept="image/*" multiple tabindex="-1" aria-hidden="true">
+    <p class="aviso" id="aviso" role="status">As fotos ficam salvas só neste navegador, no seu aparelho — nada é enviado para lugar nenhum.</p>
+  </section>
+
+  <section class="parte" aria-label="bilhetes para o nosso céu">
+    <h2>Nosso céu de bilhetes</h2>
+    <p class="legenda">Escreva o que quiser guardar — um motivo, uma lembrança, uma bobagem do dia. Cada bilhete vira uma estrela; toque numa estrela para reler, e escreva quantas quiser.</p>
+
+    <div class="ceu" id="ceu" aria-label="estrelas com bilhetes guardados">
+      <p class="ceuVazio" id="ceuVazio">O céu está vazio por enquanto. Escreva o primeiro bilhete abaixo.</p>
+    </div>
+
+    <div class="notaAberta" id="notaAberta" aria-live="polite" hidden>
+      <p class="notaTexto" id="notaTexto"></p>
+      <div class="notaMeta">
+        <span id="notaData"></span>
+        <button class="botao discreto" type="button" id="removerBilhete">Apagar bilhete</button>
+      </div>
+    </div>
+
+    <label class="oculto-visualmente" for="textoBilhete">Escreva um novo bilhete</label>
+    <textarea id="textoBilhete" maxlength="220" placeholder="Escreva algo para o nosso céu..."></textarea>
+    <div class="acoes">
+      <button class="botao" type="button" id="salvarBilhete">Guardar bilhete</button>
+      <span class="restante" id="restanteChars">220 caracteres</span>
+    </div>
+    <p class="aviso" id="avisoBilhete" role="status">Os bilhetes ficam salvos só neste navegador, como as fotos.</p>
+  </section>
+
+  <p class="rodape">E o contador continua.</p>
+</main>
+
+<dialog id="dialogoData">
+  <h2>Quando tudo começou</h2>
+  <label for="entradaData">Data e hora do primeiro dia</label>
+  <input type="datetime-local" id="entradaData">
+  <div class="acoes">
+    <button class="botao" type="button" id="salvarData">Salvar data</button>
+    <button class="botao discreto" type="button" id="fecharData">Cancelar</button>
+  </div>
+</dialog>
+
+<script>
+(function(){
+  "use strict";
+
+  var CHAVE_FOTOS = "umanodenos:fotos";
+  var CHAVE_INICIO = "umanodenos:inicio";
+  var CHAVE_BILHETES = "umanodenos:bilhetes";
+  var PADRAO_INICIO = "2025-10-07T00:00";
+  var LADO_MAXIMO = 1400;
+  var QUALIDADE = 0.8;
+  var MAX_BILHETE = 220;
+  var ANGULO_DOURADO = 2.399963229728653; // radiano, ~137.508°
+
+  var fotos = [];
+  var indice = 0;
+  var inicio = new Date(PADRAO_INICIO);
+  var auto = null;
+  var autoLigado = true;
+  var marcoAnterior = "";
+  var bilhetes = [];
+  var abertoId = null;
+
+  function el(id){ return document.getElementById(id); }
+
+  var palco = el("palco"), vazio = el("vazio"), setas = el("setas"),
+      pontos = el("pontos"), aviso = el("aviso"),
+      btnRemover = el("removerAtual"), btnAuto = el("alternarAuto"),
+      dlg = el("dialogoData");
+
+  var ceu = el("ceu"), ceuVazio = el("ceuVazio"),
+      notaAberta = el("notaAberta"), notaTexto = el("notaTexto"), notaData = el("notaData"),
+      campoBilhete = el("textoBilhete"), restanteChars = el("restanteChars"),
+      avisoBilhete = el("avisoBilhete");
+
+  function movimentoReduzido(){
+    return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+
+  /* ================= tempo juntos ================= */
+
+  function carregarInicio(){
+    try{
+      var d = localStorage.getItem(CHAVE_INICIO);
+      if(d && !isNaN(new Date(d).getTime())){ inicio = new Date(d); }
+    }catch(e){}
+  }
+
+  function somaMeses(base, n){
+    var dia = base.getDate();
+    var d = new Date(base.getFullYear(), base.getMonth(), 1, base.getHours(), base.getMinutes(), base.getSeconds(), base.getMilliseconds());
+    d.setMonth(d.getMonth() + n);
+    var ultimo = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+    d.setDate(Math.min(dia, ultimo));
+    return d;
+  }
+
+  function aniversarioEm(anosAlvo){
+    var mes = inicio.getMonth(), dia = inicio.getDate();
+    var ano = inicio.getFullYear() + anosAlvo;
+    var ultimo = new Date(ano, mes + 1, 0).getDate();
+    return new Date(ano, mes, Math.min(dia, ultimo));
+  }
+
+  function plural(n, um, muitos){ return n === 1 ? um : muitos; }
+
+  function tique(){
+    var agora = new Date();
+    if(agora < inicio){ agora = new Date(inicio.getTime()); }
+
+    var totalMeses = 0;
+    while(somaMeses(inicio, totalMeses + 1) <= agora){ totalMeses++; }
+    var resto = agora - somaMeses(inicio, totalMeses);
+    if(resto < 0){ resto = 0; }
+
+    var anos = Math.floor(totalMeses / 12);
+    var meses = totalMeses % 12;
+    var dias = Math.floor(resto / 86400000);
+    var horas = Math.floor(resto % 86400000 / 3600000);
+    var minutos = Math.floor(resto % 3600000 / 60000);
+    var segundos = Math.floor(resto % 60000 / 1000);
+
+    el("anos").textContent = anos;
+    el("meses").textContent = meses;
+    el("dias").textContent = dias;
+    el("horas").textContent = horas;
+    el("minutos").textContent = minutos;
+    el("segundos").textContent = segundos < 10 ? "0" + segundos : String(segundos);
+
+    el("uAnos").textContent = plural(anos, "ano", "anos");
+    el("uMeses").textContent = plural(meses, "mês", "meses");
+    el("uDias").textContent = plural(dias, "dia", "dias");
+    el("uHoras").textContent = plural(horas, "hora", "horas");
+    el("uMinutos").textContent = plural(minutos, "minuto", "minutos");
+    el("uSegundos").textContent = plural(segundos, "segundo", "segundos");
+
+    marcar(agora);
+  }
+
+  function marcar(agora){
+    var hoje = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
+    var anos = 1;
+    var alvo = aniversarioEm(anos);
+    while(alvo < hoje && anos < 200){
+      anos++;
+      alvo = aniversarioEm(anos);
+    }
+
+    var faltam = Math.round((alvo - hoje) / 86400000);
+    var nome = anos === 1 ? "o nosso primeiro ano" : "os nossos " + anos + " anos";
+    var destaque, antes, depois;
+
+    if(faltam <= 0){
+      antes = "É hoje: ";
+      destaque = anos === 1 ? "um ano" : anos + " anos";
+      depois = ".";
+    }else{
+      antes = faltam === 1 ? "Falta " : "Faltam ";
+      destaque = faltam === 1 ? "1 dia" : faltam + " dias";
+      depois = " para " + nome + ".";
+    }
+
+    var assinatura = antes + destaque + depois;
+    if(assinatura === marcoAnterior) return;
+    marcoAnterior = assinatura;
+
+    var p = el("marco");
+    p.textContent = antes;
+    var b = document.createElement("b");
+    b.textContent = destaque;
+    p.appendChild(b);
+    p.appendChild(document.createTextNode(depois));
+  }
+
+  function rotularInicio(){
+    var texto;
+    try{
+      texto = inicio.toLocaleDateString("pt-BR", {day:"numeric", month:"long", year:"numeric"});
+    }catch(e){
+      texto = inicio.toLocaleDateString();
+    }
+    el("rotuloInicio").textContent = texto;
+  }
+
+  /* ================= carrossel ================= */
+
+  function carregarFotos(){
+    try{
+      var f = localStorage.getItem(CHAVE_FOTOS);
+      var lista = f ? JSON.parse(f) : [];
+      if(Object.prototype.toString.call(lista) === "[object Array]"){
+        fotos = lista.filter(function(s){ return typeof s === "string" && s.indexOf("data:image") === 0; });
+      }
+    }catch(e){ fotos = []; }
+  }
+
+  function salvarFotos(){
+    try{
+      localStorage.setItem(CHAVE_FOTOS, JSON.stringify(fotos));
+      return true;
+    }catch(e){
+      return false;
+    }
+  }
+
+  function desenharGaleria(){
+    var antigos = palco.querySelectorAll(".quadro");
+    for(var i = antigos.length - 1; i >= 0; i--){ antigos[i].parentNode.removeChild(antigos[i]); }
+    pontos.innerHTML = "";
+
+    var tem = fotos.length > 0;
+    var varias = fotos.length > 1;
+
+    vazio.hidden = tem;
+    setas.hidden = !varias;
+    btnRemover.hidden = !tem;
+    btnAuto.hidden = !varias;
+
+    if(!tem){
+      pararAuto();
+      return;
+    }
+    if(indice >= fotos.length){ indice = fotos.length - 1; }
+    if(indice < 0){ indice = 0; }
+
+    fotos.forEach(function(src, i){
+      var q = document.createElement("div");
+      q.className = "quadro" + (i === indice ? " ativo" : "");
+      var img = document.createElement("img");
+      img.src = src;
+      img.alt = "Foto " + (i + 1) + " de " + fotos.length;
+      img.draggable = false;
+      q.appendChild(img);
+      palco.insertBefore(q, vazio);
+
+      if(varias){
+        var p = document.createElement("button");
+        p.className = "ponto";
+        p.type = "button";
+        p.setAttribute("aria-label", "Ver foto " + (i + 1));
+        p.setAttribute("aria-current", i === indice ? "true" : "false");
+        (function(k){
+          p.addEventListener("click", function(){ irPara(k); reiniciarAuto(); });
+        })(i);
+        pontos.appendChild(p);
+      }
+    });
+
+    if(varias && autoLigado){ iniciarAuto(); } else { pararAuto(); }
+  }
+
+  function irPara(i){
+    if(!fotos.length) return;
+    indice = ((i % fotos.length) + fotos.length) % fotos.length;
+    var quadros = palco.querySelectorAll(".quadro");
+    for(var k = 0; k < quadros.length; k++){
+      quadros[k].className = k === indice ? "quadro ativo" : "quadro";
+    }
+    for(var j = 0; j < pontos.children.length; j++){
+      pontos.children[j].setAttribute("aria-current", j === indice ? "true" : "false");
+    }
+  }
+
+  function rotularAuto(){
+    btnAuto.textContent = autoLigado ? "Pausar passagem" : "Retomar passagem";
+  }
+
+  function iniciarAuto(){
+    if(auto){ clearInterval(auto); auto = null; }
+    rotularAuto();
+    if(!autoLigado || fotos.length < 2 || movimentoReduzido() || document.hidden) return;
+    auto = setInterval(function(){ irPara(indice + 1); }, 6000);
+  }
+
+  function pararAuto(){
+    if(auto){ clearInterval(auto); auto = null; }
+    rotularAuto();
+  }
+
+  function reiniciarAuto(){ if(autoLigado){ iniciarAuto(); } }
+
+  document.addEventListener("visibilitychange", function(){
+    if(document.hidden){ if(auto){ clearInterval(auto); auto = null; } }
+    else{ reiniciarAuto(); }
+  });
+
+  function abrirImagem(arquivo){
+    if(window.createImageBitmap){
+      try{
+        return createImageBitmap(arquivo, {imageOrientation:"from-image"}).catch(porTagImg.bind(null, arquivo));
+      }catch(e){ /* opção não suportada */ }
+    }
+    return porTagImg(arquivo);
+  }
+
+  function porTagImg(arquivo){
+    return new Promise(function(resolve, reject){
+      var leitor = new FileReader();
+      leitor.onerror = function(){ reject(new Error("leitura")); };
+      leitor.onload = function(){
+        var img = new Image();
+        img.onload = function(){ resolve(img); };
+        img.onerror = function(){ reject(new Error("imagem")); };
+        img.src = leitor.result;
+      };
+      leitor.readAsDataURL(arquivo);
+    });
+  }
+
+  function reduzir(arquivo){
+    return abrirImagem(arquivo).then(function(fonte){
+      var w = fonte.width, h = fonte.height;
+      if(!w || !h){ throw new Error("dimensao"); }
+      if(w > LADO_MAXIMO || h > LADO_MAXIMO){
+        var escala = Math.min(LADO_MAXIMO / w, LADO_MAXIMO / h);
+        w = Math.max(1, Math.round(w * escala));
+        h = Math.max(1, Math.round(h * escala));
+      }
+      var tela = document.createElement("canvas");
+      tela.width = w; tela.height = h;
+      var ctx = tela.getContext("2d");
+      ctx.drawImage(fonte, 0, 0, w, h);
+      if(fonte.close){ fonte.close(); }
+      var dados = tela.toDataURL("image/jpeg", QUALIDADE);
+      if(dados.indexOf("data:image") !== 0){ throw new Error("conversao"); }
+      return dados;
+    });
+  }
+
+  function recado(texto, erro){
+    aviso.textContent = texto;
+    aviso.className = erro ? "aviso erro" : "aviso";
+  }
+
+  el("arquivo").addEventListener("change", function(ev){
+    var lista = [];
+    var arquivos = ev.target.files;
+    for(var i = 0; i < arquivos.length; i++){
+      if(arquivos[i].type.indexOf("image/") === 0){ lista.push(arquivos[i]); }
+    }
+    var descartados = arquivos.length - lista.length;
+    ev.target.value = "";
+
+    if(!lista.length){
+      recado(descartados ? "Esses arquivos não são imagens. Escolha fotos em JPG, PNG ou HEIC." : "Nenhuma foto escolhida.", !!descartados);
+      return;
+    }
+
+    recado("Preparando " + (lista.length === 1 ? "a foto" : "as " + lista.length + " fotos") + "…", false);
+
+    Promise.all(lista.map(reduzir)).then(function(novas){
+      var antes = fotos.slice();
+      var primeiraNova = antes.length;
+      fotos = antes.concat(novas);
+      if(salvarFotos()){
+        indice = primeiraNova;
+        desenharGaleria();
+        recado(fotos.length + (fotos.length === 1 ? " foto guardada neste navegador." : " fotos guardadas neste navegador."), false);
+      }else{
+        fotos = antes;
+        salvarFotos();
+        desenharGaleria();
+        recado("Não coube no armazenamento deste navegador. Remova alguma foto antes de adicionar outra, ou adicione menos de uma vez.", true);
+      }
+    }).catch(function(){
+      recado("Não consegui ler um dos arquivos. Tente de novo com fotos em JPG ou PNG.", true);
+    });
+  });
+
+  var gatilhos = document.querySelectorAll("[data-adicionar]");
+  for(var g = 0; g < gatilhos.length; g++){
+    gatilhos[g].addEventListener("click", function(){ el("arquivo").click(); });
+  }
+
+  btnRemover.addEventListener("click", function(){
+    if(!fotos.length) return;
+    fotos.splice(indice, 1);
+    if(indice >= fotos.length){ indice = fotos.length - 1; }
+    if(indice < 0){ indice = 0; }
+    salvarFotos();
+    desenharGaleria();
+    recado(fotos.length ? "Foto removida." : "Sem fotos por aqui. Adicione as nossas quando quiser.", false);
+  });
+
+  btnAuto.addEventListener("click", function(){
+    autoLigado = !autoLigado;
+    if(autoLigado){ iniciarAuto(); } else { pararAuto(); }
+  });
+
+  el("anterior").addEventListener("click", function(){ irPara(indice - 1); reiniciarAuto(); });
+  el("proxima").addEventListener("click", function(){ irPara(indice + 1); reiniciarAuto(); });
+
+  document.addEventListener("keydown", function(e){
+    if(dlg.open) return;
+    var alvo = e.target;
+    if(alvo && (alvo.tagName === "INPUT" || alvo.tagName === "TEXTAREA")) return;
+    if(e.key === "ArrowLeft"){ irPara(indice - 1); reiniciarAuto(); }
+    else if(e.key === "ArrowRight"){ irPara(indice + 1); reiniciarAuto(); }
+  });
+
+  var x0 = null, y0 = null, idPonteiro = null;
+
+  palco.addEventListener("pointerdown", function(e){
+    if(e.target.closest && e.target.closest(".seta, button")) return;
+    x0 = e.clientX; y0 = e.clientY; idPonteiro = e.pointerId;
+    if(palco.setPointerCapture){ try{ palco.setPointerCapture(e.pointerId); }catch(err){} }
+  });
+
+  function encerrarGesto(e){
+    if(x0 === null || e.pointerId !== idPonteiro){ return; }
+    var dx = e.clientX - x0, dy = e.clientY - y0;
+    x0 = null; y0 = null; idPonteiro = null;
+    if(palco.releasePointerCapture){ try{ palco.releasePointerCapture(e.pointerId); }catch(err){} }
+    if(Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)){
+      irPara(indice + (dx < 0 ? 1 : -1));
+      reiniciarAuto();
+    }
+  }
+
+  palco.addEventListener("pointerup", encerrarGesto);
+  palco.addEventListener("pointercancel", function(e){
+    x0 = null; y0 = null; idPonteiro = null;
+    if(palco.releasePointerCapture){ try{ palco.releasePointerCapture(e.pointerId); }catch(err){} }
+  });
+
+  /* ================= data de início ================= */
+
+  function doisDigitos(n){ return n < 10 ? "0" + n : String(n); }
+
+  function abrirDialogo(){
+    var d = inicio;
+    el("entradaData").value = d.getFullYear() + "-" + doisDigitos(d.getMonth() + 1) + "-" +
+      doisDigitos(d.getDate()) + "T" + doisDigitos(d.getHours()) + ":" + doisDigitos(d.getMinutes());
+    if(typeof dlg.showModal === "function"){ dlg.showModal(); }
+    else if(typeof dlg.show === "function"){ dlg.show(); }
+    else{ dlg.setAttribute("open", ""); }
+  }
+
+  function fecharDialogo(){
+    if(typeof dlg.close === "function"){ dlg.close(); }
+    else{ dlg.removeAttribute("open"); }
+  }
+
+  el("abrirData").addEventListener("click", abrirDialogo);
+  el("fecharData").addEventListener("click", fecharDialogo);
+
+  el("salvarData").addEventListener("click", function(){
+    var v = el("entradaData").value;
+    var nova = v ? new Date(v) : null;
+    if(nova && !isNaN(nova.getTime())){
+      inicio = nova;
+      try{ localStorage.setItem(CHAVE_INICIO, v); }catch(e){}
+      rotularInicio();
+      marcoAnterior = "";
+      tique();
+    }
+    fecharDialogo();
+  });
+
+  /* ================= céu de bilhetes ================= */
+
+  function carregarBilhetes(){
+    try{
+      var b = localStorage.getItem(CHAVE_BILHETES);
+      var lista = b ? JSON.parse(b) : [];
+      if(Object.prototype.toString.call(lista) === "[object Array]"){
+        bilhetes = lista.filter(function(n){
+          return n && typeof n.id === "string" && typeof n.texto === "string" && n.texto.length > 0;
+        });
+      }
+    }catch(e){ bilhetes = []; }
+  }
+
+  function salvarBilhetes(){
+    try{
+      localStorage.setItem(CHAVE_BILHETES, JSON.stringify(bilhetes));
+      return true;
+    }catch(e){
+      return false;
+    }
+  }
+
+  function novoId(){
+    if(window.crypto && typeof window.crypto.randomUUID === "function"){ return window.crypto.randomUUID(); }
+    return "b" + Date.now() + "-" + Math.random().toString(36).slice(2, 8);
+  }
+
+  /* distribui as estrelas em espiral (ângulo dourado): sempre bem espalhadas, */
+  /* determinístico — mesmo bilhete sempre cai no mesmo lugar do céu */
+  function calcularPosicao(i, n){
+    var t = n <= 1 ? 0.5 : (i + 0.5) / n;
+    var r = Math.sqrt(t);
+    var theta = i * ANGULO_DOURADO;
+    return {
+      esquerda: 50 + r * Math.cos(theta) * 38,
+      topo: 50 + r * Math.sin(theta) * 38
+    };
+  }
+
+  function formatarDataBilhete(iso){
+    var d = new Date(iso);
+    if(isNaN(d.getTime())) return "";
+    try{ return d.toLocaleDateString("pt-BR", {day:"numeric", month:"long", year:"numeric"}); }
+    catch(e){ return d.toLocaleDateString(); }
+  }
+
+  function fecharNota(){
+    abertoId = null;
+    notaAberta.hidden = true;
+    var estrelas = ceu.querySelectorAll(".estrela");
+    for(var i = 0; i < estrelas.length; i++){ estrelas[i].setAttribute("aria-pressed", "false"); }
+  }
+
+  function abrirNota(id){
+    var nota = null;
+    for(var i = 0; i < bilhetes.length; i++){
+      if(bilhetes[i].id === id){ nota = bilhetes[i]; break; }
+    }
+    if(!nota){ fecharNota(); return; }
+
+    abertoId = id;
+    notaTexto.textContent = nota.texto;
+    notaData.textContent = formatarDataBilhete(nota.data);
+    notaAberta.hidden = false;
+
+    var estrelas = ceu.querySelectorAll(".estrela");
+    for(var j = 0; j < estrelas.length; j++){
+      estrelas[j].setAttribute("aria-pressed", estrelas[j].getAttribute("data-id") === id ? "true" : "false");
+    }
+  }
+
+  function desenharCeu(){
+    var antigas = ceu.querySelectorAll(".estrela");
+    for(var i = antigas.length - 1; i >= 0; i--){ antigas[i].parentNode.removeChild(antigas[i]); }
+
+    var tem = bilhetes.length > 0;
+    ceuVazio.hidden = tem;
+
+    if(!tem){ fecharNota(); return; }
+
+    if(abertoId){
+      var aindaExiste = false;
+      for(var k = 0; k < bilhetes.length; k++){ if(bilhetes[k].id === abertoId){ aindaExiste = true; break; } }
+      if(!aindaExiste){ fecharNota(); }
+    }
+
+    bilhetes.forEach(function(nota, i){
+      var pos = calcularPosicao(i, bilhetes.length);
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "estrela" + (i % 2 === 1 ? " rosada" : "");
+      b.style.left = pos.esquerda + "%";
+      b.style.top = pos.topo + "%";
+      b.setAttribute("data-id", nota.id);
+      b.setAttribute("aria-pressed", nota.id === abertoId ? "true" : "false");
+      var previa = nota.texto.length > 40 ? nota.texto.slice(0, 40) + "…" : nota.texto;
+      b.setAttribute("aria-label", "Bilhete: " + previa);
+      b.addEventListener("click", function(){
+        var id = this.getAttribute("data-id");
+        if(abertoId === id){ fecharNota(); } else { abrirNota(id); }
+      });
+      ceu.appendChild(b);
+    });
+  }
+
+  function atualizarRestante(){
+    var restante = MAX_BILHETE - campoBilhete.value.length;
+    if(restante < 0){ restante = 0; }
+    restanteChars.textContent = restante + (restante === 1 ? " caractere" : " caracteres");
+  }
+
+  campoBilhete.addEventListener("input", atualizarRestante);
+
+  function recadoBilhete(texto, erro){
+    avisoBilhete.textContent = texto;
+    avisoBilhete.className = erro ? "aviso erro" : "aviso";
+  }
+
+  el("salvarBilhete").addEventListener("click", function(){
+    var texto = campoBilhete.value.trim();
+    if(!texto){
+      recadoBilhete("Escreva algo antes de guardar.", true);
+      campoBilhete.focus();
+      return;
+    }
+    if(texto.length > MAX_BILHETE){ texto = texto.slice(0, MAX_BILHETE); }
+
+    var antes = bilhetes.slice();
+    bilhetes = antes.concat([{ id: novoId(), texto: texto, data: new Date().toISOString() }]);
+
+    if(salvarBilhetes()){
+      campoBilhete.value = "";
+      atualizarRestante();
+      desenharCeu();
+      recadoBilhete("Bilhete guardado no céu.", false);
+    }else{
+      bilhetes = antes;
+      recadoBilhete("Não consegui guardar: sem espaço no armazenamento deste navegador.", true);
+    }
+  });
+
+  el("removerBilhete").addEventListener("click", function(){
+    if(!abertoId) return;
+    var antes = bilhetes.slice();
+    bilhetes = bilhetes.filter(function(n){ return n.id !== abertoId; });
+    if(salvarBilhetes()){
+      fecharNota();
+      desenharCeu();
+      recadoBilhete("Bilhete apagado.", false);
+    }else{
+      bilhetes = antes;
+      recadoBilhete("Não consegui apagar agora. Tente de novo.", true);
+    }
+  });
+
+  /* ================= começo ================= */
+
+  carregarInicio();
+  rotularInicio();
+
+  carregarFotos();
+  desenharGaleria();
+
+  carregarBilhetes();
+  desenharCeu();
+  atualizarRestante();
+
+  tique();
+  setInterval(tique, 1000);
+})();
+</script>
+</body>
+</html>
